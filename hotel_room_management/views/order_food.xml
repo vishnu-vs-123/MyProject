@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--        <record id="item_kanban" model="ir.ui.view">-->
+<!--            <field name="name">hotel.item.kanban</field>-->
+<!--            <field name="model">hotel.item</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <kanban create="1" edit="0" class="o_kanban_mobile">-->
+<!--                    <field name="image" class="oe_avatar" widget="image" />-->
+<!--                    <field name="name"></field>-->
+<!--                    <field name="category_ides" widget="many2many_tags"/>-->
+<!--                    <field name="price"></field>-->
+<!--                    <field name="id"></field>-->
+<!--                      <templates>-->
+<!--                        <t t-name="kanban-box">-->
+<!--                            <div class="oe_kanban_global_click-->
+<!--                            o_kanban_record_has_image_fill o_kanban_record">-->
+<!--                                <div class="o_kanban_image_fill_left d-none-->
+<!--                                d-md-block" t-attf-style="background-image:url-->
+<!--                                ('#{kanban_image('hotel.item', 'image',-->
+<!--                                record.id.raw_value)}')"/>-->
+<!--                                <div class="oe_kanban_details">-->
+<!--                                    <div class="o_kanban_record_top">-->
+<!--                                        <div class="o_kanban_record_headings">-->
+<!--                                            <strong class="o_kanban_record_title">-->
+<!--                                                <div>-->
+<!--                                                    <div class="float-right">-->
+<!--                                                        <field name="price" />-->
+<!--                                                    </div>-->
+<!--                                                    <strong><span t-esc="record.-->
+<!--                                                    name.value"/></strong>-->
+<!--                                                </div>-->
+<!--                                            </strong>-->
+<!--                                            <span class="o_kanban_record_subtitle">-->
+<!--                                                <span t-esc="record.category_ides.-->
+<!--                                                value"/></span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </t>-->
+<!--                    </templates>-->
+<!--                </kanban>-->
+
+<!--            </field>-->
+<!--        </record>-->
+
+    <record id="order_tree" model="ir.ui.view">
+        <field name="name">hotel.order.tree</field>
+        <field name="model">hotel.order</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="room_id"></field>
+                <field name="gust"></field>
+                <field name="order_time"></field>
+
+            </tree>
+
+        </field>
+    </record>
+
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="name">hotel.order.form</field>
+        <field name="model">hotel.order</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="room_id"></field>
+                            <field name="gust"></field>
+
+
+                        </group>
+                        <group>
+
+                            <field name="order_time"></field>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Menu" name="menu">
+                            <field name="category_ide" widget="many2many_tags"/>
+                            <field name="item_ide" mode="kanban"  >
+                                <kanban create="1" edit="0"
+                                        class="o_kanban_mobile">
+
+                                    <field name="image" class="oe_avatar"
+                                           widget="image"/>
+                                    <field name="name"></field>
+                                    <field name="category_ides"
+                                           widget="many2many_tags"/>
+                                    <field name="price"></field>
+                                    <field name="id"></field>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <t t-set="color" />
+                                            <div class = " oe_kanban_global_click">
+                                                <div class="o_kanban_image d-md-block">
+                                                    <img alt="item image"  t-att-src="kanban_image('hotel.item', 'image', record.id.raw_value)"/>
+
+                                                </div>
+                                                <div class="oe_kanban_details">
+                                                    <div class="float-right">
+                                                        <field name="price"/>
+                                                    </div>
+                                                    <strong>
+                                                    <field name="name"/>
+                                                    </strong>
+                                                    <div t-if="record.category_ides.raw_value"><field name="category_ides"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+
+
+                        </page>
+                        <page string="Order List" name="order_list">
+                            <field name="order_list_ide">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price"/>
+                                    <field name="sub_total"/>
+                                </tree>
+
+                            </field>
+
+                        </page>
+                    </notebook>
+
+
+
+                </sheet>
+
+            </form>
+
+
+        </field>
+    </record>
+
+
+        <record id="view_food_item_form" model="ir.ui.view">
+            <field name="name">hotel.item.form</field>
+            <field name="model">hotel.item</field>
+            <field name="arch" type="xml">
+                <form>
+<!--                    <sheet>-->
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                <field name="image" class="oe_avatar" widget="image"-->
+<!--                                />-->
+<!--                                <field name="name"></field>-->
+<!--                            </group>-->
+<!--                            <group>-->
+<!--                                <field name="category_ides"-->
+<!--                                               widget="many2many_tags"/>-->
+<!--                                <field name="price"></field>-->
+<!--                            </group>-->
+<!--                        </group>-->
+<!--                    </sheet>-->
+                    <div class="d-flex">
+                        <div class="flex-grow-0 pr-5">
+                            <field name="image" widget="image" class="o_lunch_image" options="{'image_preview': 'image'}"/>
+                        </div>
+                        <div class="flex-grow-1 pr-5">
+                            <h2><field name="name" options="{'no_create_edit': True}"/></h2>
+                            <h3 class="pt-3" ><field name="price" options="{'no_create_edit': True}" /></h3>
+                        </div>
+                    </div>
+
+                    <div class="o_lunch_wizard">
+<!--                        <div class="col-2">-->
+<!--                            <label for="quantity" class="font-weight-bold"/>-->
+<!--                        </div>-->
+<!--                        <div class="col-10">-->
+<!--                            <field name="quantity_id" nolabel="1"/>-->
+<!--                        </div>-->
+                         <field name="quantity_id" nolabel="1"/>
+                    </div>
+                <footer>
+                    <button string="Add to List" name="action_add_to_list" type="object" class="btn-primary" />
+
+                </footer>
+                </form>
+            </field>
+        </record>
+
+
+    <record id="order_action" model="ir.actions.act_window">
+        <field name="name">order food</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hotel.order</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_content_smiling_face">
+                create a new order!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="order_food"
+              name="order food"
+              parent="hotel_menu_root"
+              action="order_action"
+              sequence="10"/>
+
+</odoo>
+
+
+

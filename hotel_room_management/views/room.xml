@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="room_search">
+        <field name="name">hotel.room.search</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <search string="room">
+
+                <filter string="single" name="single"
+                        domain="[('bed', '=', 'single')]"/>
+                <filter string="double" name="double"
+                        domain="[('bed', '=', 'double')]"/>
+                <filter string="dormitory" name="dormitory"
+                        domain="[('bed', '=', 'dormitory')]"/>
+                <filter string="ac" name="ac"
+                        domain="[('facility', '=', 'ac')]"/>
+                <filter string="TV" name="tv"
+                        domain="[('facility', '=', 'TV')]"/>
+                <filter string="room available" name="room_available"
+                        domain="[('room_available','=',True)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="bed" string="bed type"
+                            context="{'group_by': 'bed'}"/>
+
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="accommodation_search">
+        <field name="name">hotel.accommodation.search</field>
+        <field name="model">hotel.accommodation</field>
+        <field name="arch" type="xml">
+            <search string="room">
+                <field name="name"/>
+                <field name="room"/>
+                <field name="gust_id"/>
+
+
+                <filter string="current day checkouts " name="checkout_date"
+                        domain="[('checkout_date', '=',context_today().
+                        strftime('%%Y-%%m-%%d'))]"/>
+
+
+                <filter string="next day checkout" name="next_day"
+                        domain="[('expected_date', '=',
+                        (context_today()+datetime.timedelta(1)).
+                        strftime('%%Y-%%m-%%d'))]"/>
+
+
+                <filter string="available " name="available"
+                        domain="[('state', '!=', 'cancel')]"/>
+                <filter string="check-in " name="check-in"
+                        domain="[('state', '!=', 'check-in')]"/>
+
+
+                <filter string="expected checkouts " name="expected_date"
+                        domain="[('expected_date', '=',context_today().
+                strftime('%%Y-%%m-%%d'))]"/>
+                <filter string="single" name="single"
+                        domain="[('bed', '=', 'single')]"/>
+                <filter string="double" name="double"
+                        domain="[('bed', '=', 'double')]"/>
+                <filter string="dormitory" name="dormitory"
+                        domain="[('bed', '=', 'dormitory')]"/>
+                <filter string="ac" name="ac"
+                        domain="[('facility', '=', 'ac')]"/>
+                <filter string="TV" name="tv"
+                        domain="[('facility', '=', 'TV')]"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="bed_type" string="bed type"
+                            context="{'group_by': 'bed'}"/>
+                    <filter name="status" string="State"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="room" string="Room"
+                            context="{'group_by': 'room'}"/>
+
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+
+    <record id="room_tree" model="ir.ui.view">
+        <field name="name">hotel.room.tree</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"></field>
+                <field name="bed"></field>
+                <field name="facility"></field>
+                <field name="room_available"></field>
+
+
+            </tree>
+
+        </field>
+    </record>
+    <record id="facility_tree" model="ir.ui.view">
+        <field name="name">hotel.facility.tree</field>
+        <field name="model">hotel.facility</field>
+        <field name="arch" type="xml">
+            <tree>
+
+                <field name="name"></field>
+            </tree>
+
+        </field>
+    </record>
+
+    <record id="accommodation_tree" model="ir.ui.view">
+        <field name="name">hotel.accommodation.tree</field>
+        <field name="model">hotel.accommodation</field>
+        <field name="arch" type="xml">
+            <tree >
+
+                <field name="name"/>
+                <field name="gust_id"/>
+                <field name="room" />
+                <field name="bed" optional="hide" />
+                <field name="checkin" />
+                <field name="checkout" />
+                <field name="expected_date" optional="hide"
+                       decoration-warning="expected_date == (context_today().
+                       strftime('%%Y-%%m-%%d')) or state == 'check-out' "
+                       decoration-danger="expected_date == (context_today().
+                       strftime('%%Y-%%m-%%d')) or state == 'darft' or state ==
+                       'check-in'" />
+                <field name="state"
+                       attrs="{'invisible': [('state','=','cancel')]}"/>
+
+
+            </tree>
+
+        </field>
+    </record>
+
+
+    <record id="view_room_form" model="ir.ui.view">
+        <field name="name">hotel.room.form</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"></field>
+
+                            <field name="currency_id"/>
+                            <field name="rent"/>
+                            <!--widget="monetary" options="{'currency_field': 'currency_id'}"/>-->
+
+                        </group>
+                        <group>
+                            <field name="bed"></field>
+
+                            <field name="available" attrs="{'invisible': ['|',
+                            ('bed','=','single'),('bed','=','double')]}"/>
+                            <field name="facility" widget="many2many_tags"/>
+
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_facility_form" model="ir.ui.view">
+        <field name="name">hotel.facility.form</field>
+        <field name="model">hotel.facility</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"></field>
+                    </group>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_accommodation_form" model="ir.ui.view">
+        <field name="name">hotel.accommodation.form</field>
+        <field name="model">hotel.accommodation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button id="button_confirm" name="action_check_in"
+                            string="Check-In"
+                            type="object" states="draft" class="btn-primary"/>
+                    <button id="button_confirm1" name="action_check_out"
+                            string="Check-Out"
+                            type="object" states="check-in"
+                            class="btn-primary"/>
+                    <button id="button_confirm2" name="action_cancel"
+                            string="Cancel" type="object"
+                            states="draft,check-in,check-out"
+                            class="btn-primary"/>
+
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"></field>
+                            <field name="gust_id" widget="res_partner_many2one"
+                                   context="{'show_address': 1}"
+                                   options="{&quot;always_reload&quot;: True}"/>
+                            <field name="guest"></field>
+                            <field name="checkin"></field>
+                            <field name="checkout"></field>
+                            <field name="expected_days" attrs="{'invisible':
+                            ['|',('state','=','check-out'),('state','=',
+                            'cancel')]}"/>
+                            <field name="expected_date" attrs="{'invisible':
+                            ['|',('state','=','check-out'),('state','=',
+                            'cancel')]}"/>
+
+                        </group>
+                        <group>
+                            <field name="bed"/>
+                            <field name="available" attrs="{'invisible': ['|',
+                            ('bed','=','single'),('bed','=','double')]}"/>
+                            <field name="facility" options="{'no_create': True,
+                            'no_open': True}" widget="many2many_tags"/>
+                            <field name="room" options="{'no_create': True,
+                            'no_open': True}"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Gust" name="gust">
+                            <field name="gust_ids">
+                                <tree editable="buttom">
+                                    <field name="gust_name"/>
+                                    <field name="gender"/>
+                                    <field name="gust_age"/>
+                                </tree>
+
+                            </field>
+
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+
+                </div>
+            </form>
+
+
+        </field>
+    </record>
+
+
+    <record id="room_action" model="ir.actions.act_window">
+        <field name="name">room</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hotel.room</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                create a new room!
+            </p>
+        </field>
+    </record>
+
+    <record id="accommodation_action" model="ir.actions.act_window">
+        <field name="name">accommodation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hotel.accommodation</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{"search_default_expected_date":1}</field>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                create a new accommodation!
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="hotel_menu_root"
+              name="hotel"
+              sequence="10"/>
+
+    <menuitem id="configuration_menu"
+              name="configuration"
+              parent="hotel_menu_root"
+              sequence="10"/>
+    <menuitem id="room_menu"
+              name="room"
+              parent="configuration_menu"
+              action="room_action"
+              sequence="10"/>
+
+
+    <menuitem id="reception_menu"
+              name="reception"
+              parent="hotel_menu_root"
+              sequence="10"/>
+    <menuitem id="accommodation_menu"
+              name="accommodation"
+              parent="reception_menu"
+              action="accommodation_action"
+              sequence="10"/>
+
+
+</odoo>

@@ -246,7 +246,7 @@
                     <notebook>
                         <page string="Gust" name="gust">
                             <field name="gust_ids">
-                                <tree editable="buttom">
+                                <tree editable="bottom">
                                     <field name="gust_name"/>
                                     <field name="gender"/>
                                     <field name="gust_age"/>
@@ -255,7 +255,36 @@
                             </field>
 
                         </page>
+                         <page string="payment" name="payment">
+                            <field name="payment_ids">
+                                <tree editable="bottom">
+                                    <field name="desc"/>
+                                    <field name="quantities"/>
+                                    <field name="unit_o_ms"/>
+                                    <field name="unit_prices"/>
+                                    <field name="sub_totals"/>
+                                </tree>
+
+
+                            </field>
+                             <group name="note_group" col="6"
+                                   class="mt-2 mt-md-0">
+                                <group class="oe_subtotal_footer oe_right"
+                                       colspan="2"
+                                       name="sale_total">
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="total"/>
+                                    </div>
+                                    <field name="total" nolabel="1"
+                                           class="oe_subtotal_footer_separator "/>
+                                </group>
+                            </group>
+
+                         </page>
                     </notebook>
+
+
+
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>

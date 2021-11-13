@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Hotel Room Management',
-    'version': '1.1',
+    'version': '14.0.1.0.0',
     'summary': 'Hotel Room Management software',
     'sequence': 10,
     'description': """Hotel Room Management software""",

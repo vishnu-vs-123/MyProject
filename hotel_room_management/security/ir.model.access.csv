@@ -7,6 +7,7 @@ access_hotel_order,access.hotel.order,model_hotel_order,,1,1,1,1
 access_hotel_category,access.hotel.category,model_hotel_category,,1,1,1,1
 access_hotel_item,access.hotel.item,model_hotel_item,,1,1,1,1
 access_hotel_list,access.hotel.list,model_hotel_list,,1,1,1,1
+access_hotel_payment,access.hotel.payment,model_hotel_payment,,1,1,1,1
 
 
 

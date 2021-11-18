@@ -82,9 +82,9 @@
                         <page string="Menu" name="menu">
                             <field name="category_ids" widget="many2many_tags"/>
                             <field name="item_ids" mode="kanban"
-                                   context="{'order': id}">
-                                <kanban create="false" edit="false">
-
+                                   context="{'order': id}" create="false"
+                                   >
+                                <kanban create="false" edit="1" >
                                     <field name="image" class="oe_avatar"
                                            widget="image"/>
                                     <field name="name"></field>
@@ -95,10 +95,15 @@
                                     <templates>
                                         <t t-name="kanban-box">
                                             <t t-set="color"/>
-                                            <div class=" oe_kanban_global_click">
-                                                <div class="o_kanban_image d-md-block">
+                                            <div class=" oe_kanban_global_click"
+                                            >
+                                                <div class="o_kanban_image
+                                                d-md-block">
                                                     <img alt="item image"
-                                                         t-att-src="kanban_image('hotel.item', 'image', record.id.raw_value)"/>
+                                                         t-att-src="kanban_image
+                                                         ('hotel.item', 'image',
+                                                          record.id.raw_value)"
+                                                    />
 
                                                 </div>
                                                 <div class="oe_kanban_details">
@@ -137,11 +142,13 @@
                                 <group class="oe_subtotal_footer oe_right"
                                        colspan="2"
                                        name="sale_total">
-                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <div class="oe_subtotal_footer_separator
+                                    oe_inline o_td_label">
                                         <label for="total"/>
                                     </div>
                                     <field name="total" nolabel="1"
-                                           class="oe_subtotal_footer_separator "/>
+                                           class="oe_subtotal_footer_separator"
+                                    />
                                 </group>
                             </group>
 
@@ -189,22 +196,26 @@
                     <!--                    <field name="order_id"/>-->
 
                     <!--                    </group>-->
+                <sheet>
 
 
                     <div class="d-flex">
                         <div class="flex-grow-0 pr-5">
                             <field name="image" widget="image"
                                    class="o_lunch_image"
-                                   options="{'image_preview': 'image'}"/>
+                                   options="{'image_preview': 'image'}"
+                                   />
                         </div>
                         <div class="flex-grow-1 pr-5">
                             <h2>
                                 <field name="name"
-                                       options="{'no_create_edit': True}"/>
+                                       options="{'no_create_edit': True}"
+                                       />
                             </h2>
                             <h3 class="pt-3">
                                 <field name="price"
-                                       options="{'no_create_edit': True}"/>
+                                       options="{'no_create_edit': True}"
+                                      />
                             </h3>
                         </div>
                     </div>
@@ -212,7 +223,7 @@
                         <group>
                         <div class="row">
                             <div class="col-2">
-                                <label for="name" string="quantity"
+                                <label for="name" string="Quantity"
                                        class="font-weight-bold"/>
                             </div>
                             <div class="col-10">
@@ -224,11 +235,11 @@
                         <group>
                         <div class="row">
                             <div class="col-2">
-                                <label for="name" string="category"
+                                <label for="name" string="Category"
                                        class="font-weight-bold"/>
                             </div>
                             <div class="col-10">
-                                <field name="category_ides"/>
+                                <field name="category_ides" />
 
                             </div>
                         </div>
@@ -237,24 +248,38 @@
                             <label for="descriptions" class="font-weight-bold"/>
                         </div>
                         <div class="col-10">
-                            <field name="descriptions" nolabel="1"/>
+                            <field name="descriptions" />
                         </div>
                     </div>
-<!--                    <field name="uom_id" nolabel="1"/>-->
+
+                   <div class="row">
+                            <div class="col-2">
+                                <label for="name" string="Unit of Measure"
+                                       class="font-weight-bold"/>
+                            </div>
+                            <div class="col-10">
+                                <field name="uom_id" />
+
+                            </div>
+                        </div>
                     </group>
                     </div>
 
 
+
+
+                </sheet>
+                <footer>
                     <button string="Add to List" name="action_add_to_list"
                             type="object" class="oe_highlight"/>
-
+                </footer>
             </form>
         </field>
     </record>
 
 
     <record id="order_action" model="ir.actions.act_window">
-        <field name="name">order food</field>
+        <field name="name">Order Food</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hotel.order</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -265,7 +290,7 @@
         </field>
     </record>
     <record id="food_action" model="ir.actions.act_window">
-        <field name="name">food</field>
+        <field name="name">Food</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hotel.item</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -277,13 +302,13 @@
     </record>
 
     <menuitem id="order_food"
-              name="order food"
+              name="Order Food"
               parent="hotel_menu_root"
               action="order_action"
               sequence="10"/>
-    <menuitem id="food_action"
-              name="food"
-              parent="hotel_menu_root"
+    <menuitem id="food_action" active="False"
+              name="Food"
+              parent="configuration_menu"
               action="food_action"
               sequence="10"/>
 

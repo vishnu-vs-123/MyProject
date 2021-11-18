@@ -6,13 +6,12 @@
         <field name="model">hotel.room</field>
         <field name="arch" type="xml">
             <search string="room">
-
                 <filter string="single" name="single"
-                        domain="[('bed', '=', 'single')]"/>
+                        domain="[('bed_type', '=', 'single')]"/>
                 <filter string="double" name="double"
-                        domain="[('bed', '=', 'double')]"/>
+                        domain="[('bed_type', '=', 'double')]"/>
                 <filter string="dormitory" name="dormitory"
-                        domain="[('bed', '=', 'dormitory')]"/>
+                        domain="[('bed_type', '=', 'dormitory')]"/>
                 <filter string="ac" name="ac"
                         domain="[('facility', '=', 'ac')]"/>
                 <filter string="TV" name="tv"
@@ -21,8 +20,8 @@
                         domain="[('room_available','=',True)]"/>
 
                 <group expand="1" string="Group By">
-                    <filter name="bed" string="bed type"
-                            context="{'group_by': 'bed'}"/>
+                    <filter name="bed_type" string="bed type"
+                            context="{'group_by': 'bed_type'}"/>
 
 
                 </group>
@@ -54,7 +53,7 @@
                 <filter string="available " name="available"
                         domain="[('state', '!=', 'cancel')]"/>
                 <filter string="check-in " name="check-in"
-                        domain="[('state', '!=', 'check-in')]"/>
+                        domain="[('state', '=', 'check-in')]"/>
 
 
                 <filter string="expected checkouts " name="expected_date"
@@ -92,7 +91,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"></field>
-                <field name="bed"></field>
+                <field name="bed_type"></field>
                 <field name="facility"></field>
                 <field name="room_available"></field>
 
@@ -122,17 +121,22 @@
                 <field name="name"/>
                 <field name="gust_id"/>
                 <field name="room" />
+<!--                <field name="date" />-->
                 <field name="bed" optional="hide" />
                 <field name="checkin" />
                 <field name="checkout" />
                 <field name="expected_date" optional="hide"
-                       decoration-warning="expected_date == (context_today().
-                       strftime('%%Y-%%m-%%d')) or state == 'check-out' "
                        decoration-danger="expected_date == (context_today().
-                       strftime('%%Y-%%m-%%d')) or state == 'darft' or state ==
-                       'check-in'" />
+                       strftime('%%Y-%%m-%%d'))  and state ==
+                       'check-in' or expected_date == (context_today().
+                       strftime('%%Y-%%m-%%d'))  and state ==
+                       'draft'" decoration-warning="expected_date ==
+                       (context_today().strftime('%%Y-%%m-%%d')) and state ==
+                       'check-out'" widget="badge"/>
                 <field name="state"
                        attrs="{'invisible': [('state','=','cancel')]}"/>
+
+
 
 
             </tree>
@@ -150,17 +154,17 @@
                     <group>
                         <group>
                             <field name="name"></field>
-
+                            <field name="uom_id"></field>
                             <field name="currency_id"/>
                             <field name="rent"/>
                             <!--widget="monetary" options="{'currency_field': 'currency_id'}"/>-->
 
                         </group>
                         <group>
-                            <field name="bed"></field>
+                            <field name="bed_type"></field>
 
                             <field name="available" attrs="{'invisible': ['|',
-                            ('bed','=','single'),('bed','=','double')]}"/>
+                            ('bed_type','=','single'),('bed_type','=','double')]}"/>
                             <field name="facility" widget="many2many_tags"/>
 
                         </group>
@@ -223,7 +227,9 @@
                                    options="{&quot;always_reload&quot;: True}"/>
                             <field name="guest"></field>
                             <field name="checkin"></field>
-                            <field name="checkout"></field>
+                            <field name="checkout" attrs="{'invisible':
+                            ['|',('state','=','draft'),('state','=',
+                            'check-in')]}"></field>
                             <field name="expected_days" attrs="{'invisible':
                             ['|',('state','=','check-out'),('state','=',
                             'cancel')]}"/>
@@ -244,7 +250,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Gust" name="gust">
+                        <page string="Guest" name="gust">
                             <field name="gust_ids">
                                 <tree editable="bottom">
                                     <field name="gust_name"/>
@@ -255,7 +261,7 @@
                             </field>
 
                         </page>
-                         <page string="payment" name="payment">
+                         <page string="Payment" name="payment">
                             <field name="payment_ids">
                                 <tree editable="bottom">
                                     <field name="desc"/>
@@ -269,14 +275,18 @@
                             </field>
                              <group name="note_group" col="6"
                                    class="mt-2 mt-md-0">
+
                                 <group class="oe_subtotal_footer oe_right"
                                        colspan="2"
                                        name="sale_total">
-                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+
+                                    <div class="oe_subtotal_footer_separator
+                                    oe_inline o_td_label">
                                         <label for="total"/>
                                     </div>
                                     <field name="total" nolabel="1"
-                                           class="oe_subtotal_footer_separator "/>
+                                           class="oe_subtotal_footer_separator"
+                                    />
                                 </group>
                             </group>
 
@@ -300,7 +310,7 @@
 
 
     <record id="room_action" model="ir.actions.act_window">
-        <field name="name">room</field>
+        <field name="name">Room</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hotel.room</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -312,7 +322,7 @@
     </record>
 
     <record id="accommodation_action" model="ir.actions.act_window">
-        <field name="name">accommodation</field>
+        <field name="name">Accommodation</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hotel.accommodation</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -327,28 +337,27 @@
 
 
     <menuitem id="hotel_menu_root"
-              name="hotel"
-              sequence="10"/>
-
-    <menuitem id="configuration_menu"
-              name="configuration"
-              parent="hotel_menu_root"
-              sequence="10"/>
-    <menuitem id="room_menu"
-              name="room"
-              parent="configuration_menu"
-              action="room_action"
+              name="Hotel"
               sequence="10"/>
 
 
     <menuitem id="reception_menu"
-              name="reception"
+              name="Reception"
               parent="hotel_menu_root"
               sequence="10"/>
     <menuitem id="accommodation_menu"
-              name="accommodation"
+              name="Accommodation"
               parent="reception_menu"
               action="accommodation_action"
+              sequence="10"/>
+    <menuitem id="configuration_menu"
+              name="Configuration"
+              parent="hotel_menu_root"
+              sequence="10"/>
+    <menuitem id="room_menu"
+              name="Room"
+              parent="configuration_menu"
+              action="room_action"
               sequence="10"/>
 
 

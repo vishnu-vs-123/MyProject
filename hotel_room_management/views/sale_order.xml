@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_order_line_form_inherit" model="ir.ui.view" >
+        <field name="name">sale.order.inherited</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref ="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr = "/form/sheet/notebook/page/field[@name='order_line']/
+            tree/field[@name='name']" position="after">
+                <field name="milestone"></field>
+            </xpath>
+
+        </field>
+
+    </record>
+    <record id="view_sale_order_form_inherit" model="ir.ui.view" >
+        <field name="name">sale.order.inherited</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref ="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <button name="action_confirm" position="after" >
+                <button name="action_create_project" string="Create Project"
+                        type="object"></button>
+             </button>
+        </field>
+    </record>
+</odoo>

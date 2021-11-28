@@ -92,7 +92,6 @@
             <tree>
                 <field name="name"></field>
                 <field name="bed_type"></field>
-                <field name="facility"></field>
                 <field name="room_available"></field>
 
 
@@ -116,15 +115,14 @@
         <field name="name">hotel.accommodation.tree</field>
         <field name="model">hotel.accommodation</field>
         <field name="arch" type="xml">
-            <tree >
+            <tree>
 
                 <field name="name"/>
                 <field name="gust_id"/>
-                <field name="room" />
-<!--                <field name="date" />-->
-                <field name="bed" optional="hide" />
-                <field name="checkin" />
-                <field name="checkout" />
+                <field name="room"/>
+                <field name="bed" optional="hide"/>
+                <field name="checkin"/>
+                <field name="checkout"/>
                 <field name="expected_date" optional="hide"
                        decoration-danger="expected_date == (context_today().
                        strftime('%%Y-%%m-%%d'))  and state ==
@@ -135,8 +133,6 @@
                        'check-out'" widget="badge"/>
                 <field name="state"
                        attrs="{'invisible': [('state','=','cancel')]}"/>
-
-
 
 
             </tree>
@@ -154,10 +150,12 @@
                     <group>
                         <group>
                             <field name="name"></field>
-                            <field name="uom_id"></field>
-                            <field name="currency_id"/>
-                            <field name="rent"/>
-                            <!--widget="monetary" options="{'currency_field': 'currency_id'}"/>-->
+                            <field name="room_uom_id"></field>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="rent" class="oe_inline"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id',
+                                   'field_digits': True}"/>
 
                         </group>
                         <group>
@@ -221,11 +219,14 @@
                 <sheet>
                     <group>
                         <group>
+<!--                            <field name="currency_id"/>-->
+<!--                            <field name="room_rent" />-->
                             <field name="name"></field>
                             <field name="gust_id" widget="res_partner_many2one"
                                    context="{'show_address': 1}"
                                    options="{&quot;always_reload&quot;: True}"/>
                             <field name="guest"></field>
+<!--                            <field name="order_id"></field>-->
                             <field name="checkin"></field>
                             <field name="checkout" attrs="{'invisible':
                             ['|',('state','=','draft'),('state','=',
@@ -261,19 +262,19 @@
                             </field>
 
                         </page>
-                         <page string="Payment" name="payment">
+                        <page string="Payment" name="payment">
                             <field name="payment_ids">
                                 <tree editable="bottom">
                                     <field name="desc"/>
                                     <field name="quantities"/>
-                                    <field name="unit_o_ms"/>
+                                    <field name="payment_uom_id"/>
                                     <field name="unit_prices"/>
                                     <field name="sub_totals"/>
                                 </tree>
 
 
                             </field>
-                             <group name="note_group" col="6"
+                            <group name="note_group" col="6"
                                    class="mt-2 mt-md-0">
 
                                 <group class="oe_subtotal_footer oe_right"
@@ -290,9 +291,8 @@
                                 </group>
                             </group>
 
-                         </page>
+                        </page>
                     </notebook>
-
 
 
                 </sheet>

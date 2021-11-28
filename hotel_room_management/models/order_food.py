@@ -20,6 +20,10 @@ class HotelOrder(models.Model):
 
     order_list_ids = fields.One2many('hotel.list', 'list_id',
                                      string='order list')
+    accommodation_id = fields.Many2one('hotel.accommodation', 'Accommodation',
+                                       readonly=True,
+                                       compute='compute_accommodation_id',
+                                       store=True)
 
     total = fields.Float(string='Total', compute='_compute_total')
 
@@ -39,16 +43,25 @@ class HotelOrder(models.Model):
                 total_amt += line.sub_total
             record['total'] = total_amt
 
-    @api.onchange('room_no_id')
-    def _onchange_room_no_id(self):
-        values = self.env['hotel.accommodation'].search(
-            [('state', '=', 'check-in'), ('room.name', '=', self.room_no_id.name
+    @api.depends('room_no_id')
+    def compute_accommodation_id(self):
+
+        accommadation_details = self.env['hotel.accommodation'].search(
+            [('state', '=', 'check-in'), ('room', '=', self.room_no_id.id
                                           )])
-        for record in values:
+        for rec in accommadation_details:
+            self.accommodation_id = rec.id
+
+    @api.onchange('room_no_id')
+    def onchange_room_no_id(self):
+        accommodation = self.env['hotel.accommodation'].search(
+            [('state', '=', 'check-in'), ('room', '=', self.room_no_id.id
+                                          )])
+        for record in accommodation:
             self.gust_name = record.gust_id.name
 
     @api.onchange('category_ids')
-    def _onchange_category_ids(self):
+    def onchange_category_ids(self):
         val = []
         for category in self.category_ids:
             val.append(category.name)
@@ -63,11 +76,12 @@ class HotelFoodItem(models.Model):
     category_ides = fields.Many2one('hotel.category', string='Category',
                                     readonly=True)
     price = fields.Float(readonly=True)
-    quantity_id = fields.Float(string='Quantity', default=1)
+    quantity_id = fields.Integer(string='Quantity', default=1)
     descriptions = fields.Text(string='Description', readonly=True)
     order_id = fields.Many2one('hotel.order',
                                string='orders')
-    uom_id = fields.Many2one('uom.uom', string='Unit of Measure', readonly=True)
+    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure',
+                                     readonly=True)
 
     def action_add_to_list(self):
         lines = []
@@ -80,20 +94,25 @@ class HotelFoodItem(models.Model):
                 'quantity': self.quantity_id,
                 'unit_price': self.price,
                 'sub_total': self.quantity_id * self.price,
-                'unit_o_m': self.uom_id.name
+                'order_list_uom_id': self.product_uom_id.id
 
             }
             lines.append((0, 0, val))
             self.order_id.order_list_ids = lines
+        self.quantity_id = 1
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
 
 class HotelOrderList(models.Model):
     _name = "hotel.list"
     item_name = fields.Char(string='Name')
     description = fields.Text(string='Description')
-    quantity = fields.Float(string='Quantity')
+    quantity = fields.Integer(string='Quantity')
     unit_price = fields.Float(string='Unit Price')
     sub_total = fields.Float(string='Subtotal')
-    unit_o_m = fields.Char(string="Uom")
+    order_list_uom_id = fields.Many2one('uom.uom', string="UoM")
     list_id = fields.Many2one('hotel.order',
                               string='orders')
